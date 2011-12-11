@@ -1,0 +1,5 @@
+alias rl="source ~/bin/dotfiles/bashrc" #reload bashrc
+alias gs="git status"
+alias gh="git help" 
+alias tu="top -o cpu" #cpu
+alias tm="top -o vsize" #memory
