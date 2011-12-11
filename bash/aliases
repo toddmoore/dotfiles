@@ -1,5 +1,10 @@
 alias rl="source ~/bin/dotfiles/bashrc" #reload bashrc
 alias gs="git status"
 alias gh="git help" 
+alias gca="git commit -a"
 alias tu="top -o cpu" #cpu
 alias tm="top -o vsize" #memory
+
+function copy {
+	cat $1 | pbcopy
+}
