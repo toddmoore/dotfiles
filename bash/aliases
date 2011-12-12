@@ -2,6 +2,7 @@ alias rl="source ~/bin/dotfiles/bashrc" #reload bashrc
 alias gs="git status"
 alias gh="git help" 
 alias gca="git commit -a"
+alias gba="git branch -a"
 alias gpo="git push -u origin" 
 alias tu="top -o cpu" #cpu
 alias tm="top -o vsize" #memory
