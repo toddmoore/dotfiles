@@ -43,6 +43,101 @@ task :newemail do
   Rake::Task['gitinit'].invoke
 end
 
+desc "Create new flat file project for OSX and assign some variables"
+task :newproject do
+  print "Project Job Number: "
+
+  if (project = $stdin.gets.chomp)
+
+    path = File.join(Dir.getwd, project)
+
+    if Dir.exists? path
+      puts "ERROR: Directory already exists, exiting...."
+    else
+      `mkdir #{path}`
+      Dir.chdir(path)
+      Rake::Task['newhtml5'].invoke
+      print "Do you want to open the Project up in Sublime: [yn] "
+      case $stdin.gets.chomp
+      when 'y'
+        `subl .`
+      when 'n'
+        false
+      end
+
+    end
+  end
+end
+
+desc "Package up flat file project and place on fileserver"
+task :package_project do
+  require 'yaml'
+  # #
+  # TODO: Move the current directory contents into old
+  # Copy over the new directory
+  # 
+
+  @localDirectory = Dir.getwd
+  @date = Time.new
+  @config = YAML.load_file("dt.yaml")
+  @path_parent = @config["config"]["path_to_file_server"]
+
+  def make_current_working_directory()
+    _p = "#{@path_parent}/#{@date.strftime("%Y%m%d")}"
+    system %Q{mkdir "#{_p}"}
+    package_and_copy_current_directory(_p)
+  end
+
+  def package_and_copy_current_directory(_p)
+    Dir.chdir(@localDirectory)
+    assets_folder = @config["config"]["assets_folder_name"]
+    
+    #TODO: make this a dynamic loop, so that the folders can be (n)
+
+    css = @config["folders"]["css"]
+    images = @config["folders"]["images"]
+    js = @config["folders"]["js"]
+
+    system %Q{cp -r "./#{assets_folder}/#{css}" "#{_p}"}
+    system %Q{cp -r "./#{assets_folder}/#{images}" "#{_p}"}
+    system %Q{cp -r "./#{assets_folder}/#{js}" "#{_p}"}
+    system %Q{cp -r "./index.html" "#{_p}"}
+  end
+
+  if Dir.exists? "#{@path_parent}/#{@date.strftime("%Y%m%d")}"  
+    if not Dir.exists? "#{@path_parent}/_old"
+      system %Q{mkdir "#{@path_parent}/_old"}
+    end
+
+    Dir.chdir(@path_parent)
+    Dir['*'].each do |file|
+      if File.basename(file) != "_old"
+        if /(20)\d{6}/.match(File.basename(file))
+          if Dir.exists? "#{Dir.getwd}/_old/#{File.basename(file)}"
+            # add in incrementing underscores
+            Dir.chdir("./_old")
+            increment = 0
+            Dir['*'].each do |old_files|
+              array = old_files.split("_")
+              if File.basename(file).to_s == array[0].to_s
+                increment += 1
+              end
+            end
+            Dir.chdir("../")
+            system %Q{mv "#{file.sub('.erb', '')}" "./_old/#{file.sub('.erb', '')}_#{increment}"}
+          else
+            system %Q{mv "#{file.sub('.erb', '')}" "./_old/#{file.sub('.erb', '')}"}
+          end
+        end
+      end
+    end
+
+    make_current_working_directory()
+
+  else 
+    make_current_working_directory()
+  end
+end
 
 desc "Compile non inline styles to inline styles for eDMs"
 task :toinline do

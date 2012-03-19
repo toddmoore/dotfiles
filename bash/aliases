@@ -5,7 +5,8 @@ alias gca="git commit -a"
 alias gpo="git push -u origin" 
 alias tu="top -o cpu" #cpu
 alias tm="top -o vsize" #memory
-
+alias html5="rake newhtml5"
+alias gph="git push heroku master"
 function copy {
 	cat $1 | pbcopy
 }
