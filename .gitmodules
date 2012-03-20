@@ -1,0 +1,3 @@
+[submodule "rake-tasks"]
+	path = rake-tasks
+	url = git@github.com:toddmoore/rake-tasks.git
