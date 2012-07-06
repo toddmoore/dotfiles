@@ -8,6 +8,10 @@ alias tm="top -o vsize" #memory
 alias html5="rake newhtml5"
 alias gph="git push heroku master"
 alias project:new="rake project:newproject"
+alias r193="rvm use 1.9.3"
+alias uedm="rvm gemset use edm-test"
+alias package="rake project:package_project"
+alias uedmcouch="rvm gemset use edmcouch"
 function copy {
 	cat $1 | pbcopy
 }
